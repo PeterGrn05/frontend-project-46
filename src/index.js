@@ -2,62 +2,49 @@ import _ from 'lodash';
 import getData from './parseJson.js';
 
 function getDifferentObject(obj1, obj2) {
-  const allKeys = _.sortBy(_.union(_.keys(obj1), _.keys(obj2)))
-    .map((key) => {
-      const oldValue = obj1[key];
-      const newValue = obj2[key];
-      if (!_.has(obj2, key)) {
-        return {
-          action: 'deleted',
-          key,
-          oldValue,
-        };
-      }
-      if (!_.has(obj1, key)) {
-        return {
-          action: 'added',
-          key,
-          newValue,
-        };
-      }
-      if (oldValue !== newValue) {
-        return {
-          action: 'changed',
-          key,
-          oldValue,
-          newValue,
-        };
-      }
-      return {
-        action: 'unchanged',
-        key,
-        oldValue,
-      };
-    })
-    .map((item) => {
-      const result = [];
-      if (item.action === 'deleted') {
-        result.push(`  - ${item.key}: ${item.oldValue}\n`);
-      }
-      if (item.action === 'unchanged') {
-        result.push(`    ${item.key}: ${item.oldValue}\n`);
-      }
-      if (item.action === 'changed') {
-        result.push(`  - ${item.key}: ${item.oldValue}\n`);
-        result.push(`  + ${item.key}: ${item.newValue}\n`);
-      }
-      if (item.action === 'added') {
-        result.push(`  + ${item.key}: ${item.newValue}\n`);
-      }
-      return result;
-    });
-  return `{\n${allKeys.flat().join('')}\n}`;
+  const allKeys = _.sortBy(_.union(_.keys(obj1), _.keys(obj2)));
+
+  return allKeys.map((key) => {
+    const oldValue = obj1[key];
+    const newValue = obj2[key];
+    const action = getAction(obj1, obj2, key, oldValue, newValue);
+    return formatDiff(action, key, oldValue, newValue);
+  }).join('');
+}
+
+function getAction(obj1, obj2, key, oldValue, newValue) {
+  if (!_.has(obj2, key)) {
+    return 'deleted';
+  }
+  if (!_.has(obj1, key)) {
+    return 'added';
+  }
+  if (oldValue !== newValue) {
+    return 'changed';
+  }
+  return 'unchanged';
+}
+
+function formatDiff(action, key, oldValue, newValue) {
+  switch (action) {
+    case 'deleted':
+      return `  - ${key}: ${oldValue}\n`;
+    case 'unchanged':
+      return `    ${key}: ${oldValue}\n`;
+    case 'changed':
+      return `  - ${key}: ${oldValue}\n  + ${key}: ${newValue}\n`;
+    case 'added':
+      return `  + ${key}: ${newValue}\n`;
+    default:
+      return '';
+  }
 }
 
 function genDiff(filepath1, filepath2) {
   const dataFile1 = getData(filepath1);
   const dataFile2 = getData(filepath2);
   const result = getDifferentObject(dataFile1, dataFile2);
-  return result;
+  return `{\n${result}\n}`;
 }
+
 export default genDiff;
