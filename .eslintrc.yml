@@ -9,3 +9,4 @@ rules:
   no-console: off
   import/extensions: off
   switch-colon-spacing: off
+  no-undef: off
