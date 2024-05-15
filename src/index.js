@@ -1,17 +1,6 @@
 import _ from 'lodash';
 import getData from './parseJson.js';
 
-function getDifferentObject(obj1, obj2) {
-  const allKeys = _.sortBy(_.union(_.keys(obj1), _.keys(obj2)));
-
-  return allKeys.map((key) => {
-    const oldValue = obj1[key];
-    const newValue = obj2[key];
-    const action = getAction(obj1, obj2, key, oldValue, newValue);
-    return formatDiff(action, key, oldValue, newValue);
-  }).join('');
-}
-
 function getAction(obj1, obj2, key, oldValue, newValue) {
   if (!_.has(obj2, key)) {
     return 'deleted';
@@ -38,6 +27,17 @@ function formatDiff(action, key, oldValue, newValue) {
     default:
       return '';
   }
+}
+
+function getDifferentObject(obj1, obj2) {
+  const allKeys = _.sortBy(_.union(_.keys(obj1), _.keys(obj2)));
+
+  return allKeys.map((key) => {
+    const oldValue = obj1[key];
+    const newValue = obj2[key];
+    const action = getAction(obj1, obj2, key, oldValue, newValue);
+    return formatDiff(action, key, oldValue, newValue);
+  }).join('');
 }
 
 function genDiff(filepath1, filepath2) {
