@@ -44,7 +44,7 @@ function genDiff(filepath1, filepath2) {
   const dataFile1 = getData(filepath1);
   const dataFile2 = getData(filepath2);
   const result = getDifferentObject(dataFile1, dataFile2);
-  return `{\n${result}\n}`;
+  return `{\n${result}}`;
 }
 
 export default genDiff;
