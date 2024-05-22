@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import getData from './parseJson.js';
+import getData from './parsers.js';
 
 function getAction(obj1, obj2, key, oldValue, newValue) {
   if (!_.has(obj2, key)) {
