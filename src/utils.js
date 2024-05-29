@@ -1,6 +1,14 @@
 import _ from 'lodash';
 
 function getDifferentObject(obj1, obj2) {
+  const allKeys = _.sortBy(_.union(_.keys(obj1), _.keys(obj2)));
+  return allKeys.map((key) => {
+    const oldValue = obj1[key];
+    const newValue = obj2[key];
+    const action = getAction(key, oldValue, newValue);
+    return action;
+  });
+
   function getAction(key, oldValue, newValue) {
     if (!_.has(obj2, key)) {
       return {
@@ -13,7 +21,7 @@ function getDifferentObject(obj1, obj2) {
       return {
         action: 'added',
         key,
-        newValue: obj2[key],
+        newValue,
       };
     }
     if (_.isObject(oldValue) && _.isObject(newValue)) {
@@ -37,13 +45,6 @@ function getDifferentObject(obj1, obj2) {
       oldValue,
     };
   }
-
-  const allKeys = _.sortBy(_.union(_.keys(obj1), _.keys(obj2)));
-  return allKeys.map((key) => {
-    const oldValue = obj1[key];
-    const newValue = obj2[key];
-    return getAction(key, oldValue, newValue);
-  });
 }
 
 export default getDifferentObject;
