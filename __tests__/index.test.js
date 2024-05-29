@@ -1,12 +1,13 @@
 import { fileURLToPath } from 'url';
-import path, { dirname } from 'path';
+import { dirname } from 'path';
+import path from 'path';
 import fs from 'fs';
 import genDiff from '../src/index.js';
 
-const currentFilename = fileURLToPath(import.meta.url);
-const currentDirname = dirname(currentFilename);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-const getFixturePath = (fixtureFilename) => path.join(currentDirname, '..', '__fixtures__', fixtureFilename);
+const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
 const readFixture = (filename) => fs.readFileSync(getFixturePath(filename), 'utf-8');
 
 const path1 = getFixturePath('file1.json');
@@ -16,6 +17,7 @@ console.log(expectedFile);
 
 describe('gendiff test', () => {
   it('should compare files and return the expected output', () => {
-    expect(genDiff(getFixturePath('file1.json'), getFixturePath('file2.json'))).toEqual(expectedFile);
+    const result = genDiff(getFixturePath('file1.json'), getFixturePath('file2.json'));
+    expect(result).toEqual(expectedFile);
   });
 });
