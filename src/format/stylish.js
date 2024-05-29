@@ -36,18 +36,22 @@ function stringify(value, level) {
   return iter(value, level);
 }
 
+function formatDiff(key, action, value, depth) {
+  const space = getSpace(depth, data[action]);
+  return `${space}${key}: ${stringify(value, depth)}`;
+}
+
 export default function getStylish(diffData) {
   const iter = (diff, depth) => {
     const result = diff.map((key) => {
       switch (key.action) {
         case 'deleted':
-          return `${getSpace(depth, data.deleted)}${key.key}: ${stringify(key.oldValue, depth)}`;
         case 'added':
-          return `${getSpace(depth, data.added)}${key.key}: ${stringify(key.newValue, depth)}`;
+          return formatDiff(key.key, key.action, key[`${key.action}Value`], depth);
         case 'nested':
           return `${getSpace(depth, data.space)}${key.key}: ${iter(key.children, depth + 1)}`;
         case 'changed':
-          return [`${getSpace(depth, data.deleted)}${key.key}: ${stringify(key.oldValue, depth)}\n${getSpace(depth, data.added)}${key.key}: ${stringify(key.newValue, depth)}`];
+          return [`${formatDiff(key.key, 'deleted', key.oldValue, depth)}\n${formatDiff(key.key, 'added', key.newValue, depth)}`];
         default:
           return `${getSpace(depth, data.space)}${key.key}: ${stringify(key.oldValue, depth)}`;
       }
