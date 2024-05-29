@@ -1,19 +1,19 @@
 import _ from 'lodash';
 
 const data = {
-	added: '+ ',
-	deleted: '- ',
-	space: '  ',
+  added: '+ ',
+  deleted: '- ',
+  space: '  ',
 };
 
-function getSpace (depth, symbol) {
-	if (!symbol) {
-		return '    '.repeat(depth);
-	}
-	if (depth === 0 && !symbol) {
-		return '';
-	}
-	return `${'    '.repeat(depth)}  ${symbol}`;
+function getSpace(depth, symbol) {
+  if (!symbol) {
+    return '    '.repeat(depth);
+  }
+  if (depth === 0 && !symbol) {
+    return '';
+  }
+  return `${'    '.repeat(depth)}  ${symbol}`;
 }
 
 function stringify(value, level) {
@@ -36,9 +36,9 @@ function stringify(value, level) {
   return iter(value, level);
 }
 
-export default function getStylish (tree) {
-  const iter = (tree, depth) => {
-    const result = tree.map((key) => {
+export default function getStylish(diffData) {
+  const iter = (diff, depth) => {
+    const result = diff.map((key) => {
       switch (key.action) {
         case 'deleted':
           return `${getSpace(depth, data.deleted)}${key.key}: ${stringify(key.oldValue, depth)}`;
@@ -60,5 +60,5 @@ export default function getStylish (tree) {
       .join('\n');
   };
 
-  return iter(tree, 0);
+  return iter(diffData, 0);
 }
