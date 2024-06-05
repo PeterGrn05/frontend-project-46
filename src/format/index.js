@@ -1,5 +1,6 @@
 import getStylish from './stylish.js';
 import getPlain from './plain.js';
+import getJson from './json.js';
 
 const getFormName = (formName) => {
   if (formName === undefined) {
@@ -7,6 +8,9 @@ const getFormName = (formName) => {
   }
   if (formName === 'plain') {
     return 'plain';
+  }
+  if (formName === 'json') {
+    return 'json';
   }
   return formName;
 };
@@ -18,6 +22,9 @@ export default function makeFormat(tree, formName) {
     return result;
   } if (format === 'plain') {
     const result = getPlain(tree);
+    return result;
+  } if (format === 'json') {
+    const result = getJson(tree);
     return result;
   }
   return null;

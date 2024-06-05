@@ -19,17 +19,17 @@ const expectedJsonData = readFixture('jsontest.txt');
 
 describe('gendiff test', () => {
   it('should compare files and return the expected plain output', () => {
-    const result = genDiff(getFixturePath('file1.json'), getFixturePath('file2.json'), 'plain');
-    expect(result).toEqual(expectedPlainData);
+    expect(genDiff(getFixturePath('file1.json'), getFixturePath('file2.json'), 'plain')).toEqual(expectedPlainData);
+    expect(genDiff(getFixturePath('file1.json'), getFixturePath('file2.json'), 'plain')).toEqual(expectedPlainData);
   });
 
   it('should compare files and return the expected json output', () => {
-    const result = genDiff(getFixturePath('file1.json'), getFixturePath('file2.json'));
+    const result = genDiff(getFixturePath('file1.json'), getFixturePath('file2.json'), 'json');
     expect(result).toEqual(expectedJsonData);
   });
 
-  it('should compare yaml files and return the expected output', () => {
-    const result = genDiff(getFixturePath('file1.yml'), getFixturePath('file2.yml'), 'stylish');
-    expect(result).toEqual(expectedStylishData);
+  it('should compare the files and return the stylish output', () => {
+    expect(genDiff(getFixturePath('file1.json'), getFixturePath('file2.json'), 'stylish')).toEqual(expectedStylishData);
+    expect(genDiff(getFixturePath('file1.yml'), getFixturePath('file2.yml'), 'stylish')).toEqual(expectedStylishData);
   });
 });
