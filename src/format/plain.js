@@ -14,31 +14,24 @@ function stringifyValue(value) {
 }
 
 export default function getPlain(diff) {
-  const result = [];
-
-  function plainRecursion(diffObj, path = []) {
-    diffObj.forEach((node) => {
+  function plainRecursion(diffObj, path = [], result = []) {
+    return diffObj.reduce((acc, node) => {
       const newPath = [...path, node.key];
       const joinPath = newPath.join('.');
       switch (node.action) {
         case 'nested':
-          plainRecursion(node.children, newPath);
-          break;
+          return plainRecursion(node.children, newPath, acc);
         case 'added':
-          result.push(`Property '${joinPath}' was added with value: ${stringifyValue(node.newValue)}`);
-          break;
+          return [...acc, `Property '${joinPath}' was added with value: ${stringifyValue(node.newValue)}`];
         case 'deleted':
-          result.push(`Property '${joinPath}' was removed`);
-          break;
+          return [...acc, `Property '${joinPath}' was removed`];
         case 'changed':
-          result.push(`Property '${joinPath}' was updated. From ${stringifyValue(node.oldValue)} to ${stringifyValue(node.newValue)}`);
-          break;
+          return [...acc, `Property '${joinPath}' was updated. From ${stringifyValue(node.oldValue)} to ${stringifyValue(node.newValue)}`];
         default:
-          break;
+          return acc;
       }
-    });
+    }, result);
   }
 
-  plainRecursion(diff);
-  return result.join('\n');
+  return plainRecursion(diff).join('\n');
 }
